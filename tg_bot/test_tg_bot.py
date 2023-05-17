@@ -14,7 +14,10 @@ def start(message):
     bot.register_next_step_handler(message, answer_rndm_msg)
 def answer_rndm_msg(message):
     if not message.text.isdigit():
-        bot.send_message(message.chat.id, f"Сообщение '{message.text}' не является числом")
+        if message.text == '/start':
+            start(message)
+        else:
+            bot.send_message(message.chat.id, f"Сообщение '{message.text}' не является числом")  
     else:
         bot.send_message(message.chat.id, "Спасибо")
 
