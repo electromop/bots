@@ -9,10 +9,9 @@ bot.set_my_commands([
     telebot.types.BotCommand("/start", "Запуск бота"),
 ])
 
-
 def start_markup():
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    item1 = types.InlineKeyboardButton('Вопрос по заказу', callback_data='order_question')
+    markup = types.InlineKeyboardMarkup(row_width=2) #создаем клавиатуру, выставляем 2 кнопи в строке
+    item1 = types.InlineKeyboardButton('Вопрос по заказу', callback_data='order_question') #создаем кнопки, пишем текст, который в них будет и значение кол бека при нажатии на них
     item2 = types.InlineKeyboardButton('Вопрос по товару', callback_data='product_question')
     item3 = types.InlineKeyboardButton('Вопрос по доставке', callback_data='delivery_question')
     item4 = types.InlineKeyboardButton('Вопрос по возврату', callback_data='money_back_question')
@@ -23,7 +22,7 @@ def start_markup():
 
 def order_markup():
     markup = types.InlineKeyboardMarkup(row_width=2)
-    item1 = types.InlineKeyboardButton('Опция 1 по заказу', callback_data='order_question')
+    item1 = types.InlineKeyboardButton('Опция 1 по заказу', callback_data='order_option_1')
     item2 = types.InlineKeyboardButton('Опция 2 по заказу', callback_data='product_question')
     item3 = types.InlineKeyboardButton('Опция 3 по заказу', callback_data='delivery_question')
     item4 = types.InlineKeyboardButton('Опция 4 по заказу', callback_data='money_back_question')
@@ -65,6 +64,13 @@ def money_back_markup():
     markup.add(item1, item2, item3, item4, item5)
     return markup
 
+def option_order_1():
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    item1 = types.InlineKeyboardButton('Опция 1 по опции 1 заказа', callback_data='order_option_option_1')
+    item2 = types.InlineKeyboardButton('Опция 2 по опции 1 заказа', callback_data='order_option_option_2')
+    item5 = types.InlineKeyboardButton('Назад', callback_data='back_to_order')
+    markup.add(item1, item2,item5)
+    return markup
 
 
 
@@ -102,5 +108,10 @@ def callback_start(call):
                                   message_id=call.message.id, 
                                   text= 'Здравствуйте, я ваш онлайн помощник! Ниже выберите тему вашего вопроса.', 
                                   reply_markup=start_markup())
+        elif call.data == 'order_option_1':
+            bot.edit_message_text(chat_id=call.message.chat.id, 
+                                  message_id=call.message.id, 
+                                  text= 'Выберите подопцию', 
+                                  reply_markup=option_order_1())
 
 bot.infinity_polling(timeout=10, long_polling_timeout=5)
