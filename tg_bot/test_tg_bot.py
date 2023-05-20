@@ -36,7 +36,7 @@ def news_markup():
     item2 = types.InlineKeyboardButton('Новые законы', callback_data=text_news.get('news2'))
     item3 = types.InlineKeyboardButton('"В мире пожарников"', callback_data=text_news.get('news3'))
     item4 = types.InlineKeyboardButton('Случайная новость', callback_data=text_news.get('news4'))
-    item5 = types.InlineKeyboardButton('Назад', callback_data='')
+    item5 = types.InlineKeyboardButton('Назад', callback_data='back')
     item6 = types.InlineKeyboardButton('На главное меню', callback_data='back_to_start')
     markup.add(item1, item2, item3, item4, item5, item6)
     return markup
@@ -49,7 +49,7 @@ def order_markup():
     item3 = types.InlineKeyboardButton('Связаться с продавцом', callback_data=text_order.get('order3'))
     item4 = types.InlineKeyboardButton('Оформить возврат', callback_data=text_order.get('order4'))
     item5 = types.InlineKeyboardButton('Другой вопрос', callback_data=text_order.get('order5'))
-    item6 = types.InlineKeyboardButton('Назад', callback_data='')
+    item6 = types.InlineKeyboardButton('Назад', callback_data='back')
     item7 = types.InlineKeyboardButton('На главное меню', callback_data='back_to_start')
     markup.add(item1, item2, item3, item4, item5, item6, item7)
     return markup
@@ -64,7 +64,7 @@ def catalog_markup():
     item4 = types.InlineKeyboardButton('Покрывала', callback_data=text_catalog.get('catalog4'))
     item5 = types.InlineKeyboardButton('Пожарные шкафы', callback_data=text_catalog.get('catalog5'))
     item6 = types.InlineKeyboardButton('Пожарные щиты', callback_data=text_catalog.get('catalog6'))
-    item7 = types.InlineKeyboardButton('Назад', callback_data='')
+    item7 = types.InlineKeyboardButton('Назад', callback_data='back')
     item8 = types.InlineKeyboardButton('На главное меню', callback_data='back_to_start')
     markup.add(item1, item2, item3, item4, item5, item6, item7, item8)
     return markup
@@ -74,7 +74,7 @@ def recomendation_markup():
     markup = types.InlineKeyboardMarkup(row_width=3)
     item1 = types.InlineKeyboardButton('Рекомендация №1', callback_data=text_recomendation.get('rec1'))
     item2 = types.InlineKeyboardButton('Рекомендация №2', callback_data=text_recomendation.get('rec2'))
-    item3 = types.InlineKeyboardButton('Назад', callback_data='')
+    item3 = types.InlineKeyboardButton('Назад', callback_data='back')
     item4 = types.InlineKeyboardButton('На главное меню', callback_data='back_to_start')
     markup.add(item1, item2, item3, item4)
     return markup
@@ -84,7 +84,7 @@ def sales_markup():
     markup = types.InlineKeyboardMarkup(row_width=3)
     item1 = types.InlineKeyboardButton('Акции по товарам', callback_data=text_sales.get('sales1'))
     item2 = types.InlineKeyboardButton('Акции по услугам', callback_data=text_sales.get('sales2'))
-    item3 = types.InlineKeyboardButton('Назад', callback_data='')
+    item3 = types.InlineKeyboardButton('Назад', callback_data='back')
     item4 = types.InlineKeyboardButton('На главное меню', callback_data='back_to_start')
     markup.add(item1, item2, item3, item4)
     return markup
