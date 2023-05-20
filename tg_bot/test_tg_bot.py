@@ -17,6 +17,7 @@ text_order = {'order1': 'status', 'order2': 'repeat', 'order3': 'seller', 'order
 text_recomendation = {'rec1': 'recomendation1', 'rec2': 'recomendation2', 'rec3': 'recomendation3'}
 text_catalog = {'catalog1': 'extinguisher', 'catalog2': 'fire_cranes', 'catalog3': 'fire_inventory', 'catalog4': 'bedspreads', 'catalog5': 'fire_cabinets', 'catalog6': 'fire_shields'}
 text_sales = {'sales1': 'product_promotions', 'sales2': 'promotions_services'}
+prev_step = ['back_to_start', 'second_option']
 
 def start_markup():
     markup = types.InlineKeyboardMarkup(row_width=2)
@@ -90,7 +91,6 @@ def sales_markup():
     return markup
 
 
-
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(message.chat.id, 
@@ -100,35 +100,45 @@ def start(message):
 @bot.callback_query_handler(func=lambda call:True)
 def callback_start(call):
     if call.message:
+        if call.data == 'back':
+            call.data = prev_step[0]
+            print(call.data)
         if call.data == 'order_question':
             bot.edit_message_text(chat_id=call.message.chat.id, 
-                                  message_id=call.message.id, 
-                                  text= 'Выберите тему вашего вопроса по заказу:', 
-                                  reply_markup=order_markup())
+                                message_id=call.message.id, 
+                                text= 'Выберите тему вашего вопроса по заказу:', 
+                                reply_markup=order_markup())
+            prev_step[1] = 'order_question'
         elif call.data == 'news_question':
             bot.edit_message_text(chat_id=call.message.chat.id, 
-                                  message_id=call.message.id, 
-                                  text= 'О чем почитаем сегодня: ', 
-                                  reply_markup=news_markup())
+                                message_id=call.message.id, 
+                                text= 'О чем почитаем сегодня: ', 
+                                reply_markup=news_markup())
+            prev_step[1] = 'news_question'
         elif call.data == 'catalog_question':
             bot.edit_message_text(chat_id=call.message.chat.id, 
-                                  message_id=call.message.id, 
-                                  text= 'Что вас интересует в мире пожарной-техники?', 
-                                  reply_markup=catalog_markup())
+                                message_id=call.message.id, 
+                                text= 'Что вас интересует в мире пожарной-техники?', 
+                                reply_markup=catalog_markup())
+            prev_step[1] = 'catalog_question'
         elif call.data == 'recomendation_question':
             bot.edit_message_text(chat_id=call.message.chat.id, 
-                                  message_id=call.message.id, 
-                                  text= 'О каких методах правильной защиты вы бы хотели узнать?', 
-                                  reply_markup=recomendation_markup())
+                                message_id=call.message.id, 
+                                text= 'О каких методах правильной защиты вы бы хотели узнать?', 
+                                reply_markup=recomendation_markup())
+            prev_step[1] = 'recomendation_question'
         elif call.data == 'discounts_promotions_questions':
             bot.edit_message_text(chat_id=call.message.chat.id, 
-                                  message_id=call.message.id, 
-                                  text= 'Представляем вашему вниманию список наших акций: ', 
-                                  reply_markup=sales_markup())
+                                message_id=call.message.id, 
+                                text= 'Представляем вашему вниманию список наших акций: ', 
+                                reply_markup=sales_markup())
+            prev_step[1] = 'discounts_promotions_questions'
         elif call.data == 'back_to_start':
             bot.edit_message_text(chat_id=call.message.chat.id, 
-                                  message_id=call.message.id, 
-                                  text= text_main_menu, 
-                                  reply_markup=start_markup())
+                                message_id=call.message.id, 
+                                text= text_main_menu, 
+                                reply_markup=start_markup())
+            prev_step[1] = 'back_to_start'
+
 
 bot.infinity_polling(timeout=10, long_polling_timeout=5)
