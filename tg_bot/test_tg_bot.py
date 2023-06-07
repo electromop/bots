@@ -97,6 +97,7 @@ def start(message):
                      text_main_menu, 
                      reply_markup=start_markup())
 
+@bot.message_handler(func=lambda x: x.text == 'Назад')
 @bot.callback_query_handler(func=lambda call:True)
 def callback_start(call):
     if call.message:
