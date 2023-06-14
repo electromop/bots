@@ -1,5 +1,7 @@
 import telebot
 from telebot import types
+import psycopg2
+from psycopg2 import Error
 
 API_TOKEN = "5658948785:AAGOBJfD3veVdc_dwCTRA0T0jB6QN0q5j-I"
 
@@ -36,6 +38,7 @@ text_recomendation = {'rec1': 'recomendation1', 'rec2': 'recomendation2', 'rec3'
 text_catalog = {'catalog1': 'extinguisher', 'catalog2': 'fire_cranes', 'catalog3': 'fire_inventory', 'catalog4': 'bedspreads', 'catalog5': 'fire_cabinets', 'catalog6': 'fire_shields', 'catalog7': 'another_item'}
 text_sales = {'sales1': 'product_promotions', 'sales2': 'promotions_services'}
 text_cli_help = {'product': 'ans1', 'catalog': 'ans2', 'sales': 'ans3', 'rec': 'ans4', 'another': 'ans5'}
+
 
 def start_markup():
     markup = types.InlineKeyboardMarkup(row_width=2)
@@ -115,6 +118,13 @@ def sales_markup():
     item3 = types.InlineKeyboardButton('Назад', callback_data='back')
     item4 = types.InlineKeyboardButton('На главное меню', callback_data='back_to_start')
     markup.add(item1, item2, item3, item4)
+    return markup
+
+def bd_test_markup():
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    item1 = types.InlineKeyboardButton('Вопрос', callback_data= )
+    item2 = types.InlineKeyboardButton('Ответ', callback_data= )
+    markup.add(item1, item2)
     return markup
 
 
