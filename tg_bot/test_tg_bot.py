@@ -10,13 +10,15 @@ bot = telebot.TeleBot(API_TOKEN)
 bot.set_my_commands([
     telebot.types.BotCommand("/start", "Запуск бота"),
     telebot.types.BotCommand("/ai_break", "Запуск искуственного интелекта"),
-    telebot.types.BotCommand("/support", "Запуск меню поддержки клиентов")
+    telebot.types.BotCommand("/support", "Запуск меню поддержки клиентов"),
+    telebot.types.BotCommand("/catalog", "Запуск каталога поиска товаров")
     ])
 
 text_main_menu = '🔥 Привет! Я твой персональный защитник от пожара! 🔥 \n\nМоя цель - обеспечить безопасность и защиту твоего бизнеса и быта, предлагая широкий выбор противопожарных товаров. Что бы ты ни искал - я всегда здесь, чтобы помочь тебе. \n\nС моей помощью ты сможешь: \n🔹 Получать актуальные новости и статьи о пожарной безопасности. \n🔹 Получать рекомендации по выбору и установке противопожарных товаров. \n🔹 Оформлять заказы и получать информацию о наличии товаров. \n🔹 Получать уведомления о специальных предложениях и скидках. \n\nНе трать время на поиск информации – просто задай мне свой вопрос, и я с радостью помогу тебе в решении любых вопросов, связанных с противопожарной защитой. Доверь свою безопасность профессионалу! Со мной ты всегда будешь в надежных руках. \n\nПоехали! 🚀'
 
 text_client_help = 'Добро пожаловать в наш чат поддержки клиентов! Мы рады приветствовать вас и готовы помочь вам решить любые вопросы или проблемы, с которыми вы столкнулись. \n\nМы понимаем, что каждый клиент уникален и имеет свои индивидуальные потребности. Поэтому наш чат-бот обучен и готов предоставить вам персонализированное обслуживание, которое поможет вам получить максимальную пользу от наших продуктов или услуг. \n\nБот доступен 24/7, чтобы помочь вам. Ваше удовлетворение - наш приоритет, и мы стремимся создать долгосрочные отношения с нашими клиентами, основанные на взаимном доверии и уважении. \n\nБлагодарим вас за выбор нашей компании. Мы ценим ваше доверие и готовы сделать все возможное, чтобы помочь вам достичь ваших целей и решить любые возникающие вопросы. Не стесняйтесь задавать вопросы - мы здесь, чтобы вам помочь! \n\nНомер горячей линии - xxx'
 
+text_catalog_menu = 'Добро пожаловать в тестовую версию каталога с функциями поиска по словам. Напишите ваш запрос: '
 
 quest_ans_dict = {
     'Какие категории пожаров существуют?': 'Существуют четыре категории пожаров: А, Б, В и С. Категория А относится к пожарам в твердых веществах, категория Б - к пожарам в легковоспламеняющихся жидкостях, категория В - к пожарам в горючих газах, а категория С - к пожарам в электроустановках.',
@@ -38,7 +40,6 @@ text_recomendation = {'rec1': 'recomendation1', 'rec2': 'recomendation2', 'rec3'
 text_catalog = {'catalog1': 'extinguisher', 'catalog2': 'fire_cranes', 'catalog3': 'fire_inventory', 'catalog4': 'bedspreads', 'catalog5': 'fire_cabinets', 'catalog6': 'fire_shields', 'catalog7': 'another_item'}
 text_sales = {'sales1': 'product_promotions', 'sales2': 'promotions_services'}
 text_cli_help = {'product': 'ans1', 'catalog': 'ans2', 'sales': 'ans3', 'rec': 'ans4', 'another': 'ans5'}
-
 
 def start_markup():
     markup = types.InlineKeyboardMarkup(row_width=2)
@@ -86,6 +87,13 @@ def cli_help():
     markup.add(item1, item2, item3, item4, item5)
     return markup
 
+def catalog_finder():
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    item1 = types.InlineKeyboardButton('Поиск товаров', callback_data= 'finder')
+    item2 = types.InlineKeyboardButton('На главное меню', callback_data='back_to_start')
+    markup.add(item1, item2)
+    return markup
+
 def catalog_markup():
     markup = types.InlineKeyboardMarkup(row_width=3)
     item1 = types.InlineKeyboardButton('Огнетушители', callback_data=text_catalog.get('catalog1'))
@@ -120,14 +128,8 @@ def sales_markup():
     markup.add(item1, item2, item3, item4)
     return markup
 
-def bd_test_markup():
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    item1 = types.InlineKeyboardButton('Вопрос', callback_data= )
-    item2 = types.InlineKeyboardButton('Ответ', callback_data= )
-    markup.add(item1, item2)
-    return markup
 
-
+words_array = ('Огнетушитель', 'Насос', 'Кран', 'Дверь', 'Дымоход', 'Лестница', 'Перчатки', 'Костюм', 'Сапоги', 'Топор', 'Шлем', 'Шкаф', 'Гидрант')
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -138,8 +140,49 @@ def start(message):
 @bot.message_handler(commands=['support'])
 def start_support(message):
     bot.send_message(message.chat.id, 
-                     text_client_help, 
+                     text_cli_help, 
                      reply_markup=cli_help())
+
+@bot.message_handler(commands=['catalog'])
+def start_catalog(message):
+    mesg = bot.send_message(message.chat.id, text_catalog_menu)
+    bot.register_next_step_handler(mesg, find)
+
+try:
+    connection = psycopg2.connect(user="postgres",
+                                  password="MiFi",
+                                  host="127.0.0.1",
+                                  port="5432",
+                                  database="bot_catalog")
+
+    cursor = connection.cursor()
+    postgreSQL_select_Query = "SELECT * FROM catalog_fire"
+    a = 1
+    cursor.execute(postgreSQL_select_Query)
+    catalog_pos = cursor.fetchmany(a)
+    name = ''
+    quantity = 0
+    photo = ''
+    price = 0
+    for pos in catalog_pos:
+        name = pos[0]
+        quantity = pos[1]
+        photo = pos[2]
+        price = pos[3] 
+except (Exception, Error) as error:
+    print("Ошибка при работе с PostgreSQL", error)
+   
+def find(message):
+    a=1
+    str = message.text
+    for word in words_array:
+        if word.lower() in str.lower():
+            while a!=20:
+                if word.lower() in name:
+                    bot.send_message(message.chat.id, name,"\n",quantity,"\n",price) 
+                else:
+                    a+=1
+                break   
 
 @bot.callback_query_handler(func=lambda call:True)
 def callback_start(call):
@@ -174,11 +217,10 @@ def callback_start(call):
                                   message_id=call.message.id, 
                                   text= text_main_menu, 
                                   reply_markup=start_markup())
-        elif call.data == 'product':
+        elif call.data == 'finder':
             bot.edit_message_text(chat_id=call.message.chat.id, 
                                   message_id=call.message.id, 
-                                  text= text_main_menu, 
-                                  reply_markup=start_markup())
-
+                                  text= 'Пожалуйста напишите ваш запрос: ')
+        
 bot.infinity_polling(timeout=10, long_polling_timeout=5)
 
