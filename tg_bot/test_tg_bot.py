@@ -147,32 +147,33 @@ def start_support(message):
 def start_catalog(message):
     mesg = bot.send_message(message.chat.id, text_catalog_menu)
     bot.register_next_step_handler(mesg, find)
-
-try:
-    connection = psycopg2.connect(user="postgres",
-                                  password="MiFi",
-                                  host="127.0.0.1",
-                                  port="5432",
-                                  database="bot_catalog")
-
-    cursor = connection.cursor()
-    postgreSQL_select_Query = "SELECT * FROM catalog_fire"
-    a = 1
-    cursor.execute(postgreSQL_select_Query)
-    catalog_pos = cursor.fetchmany(a)
-    name = ''
-    quantity = 0
-    photo = ''
-    price = 0
-    for pos in catalog_pos:
-        name = pos[0]
-        quantity = pos[1]
-        photo = pos[2]
-        price = pos[3] 
-except (Exception, Error) as error:
-    print("Ошибка при работе с PostgreSQL", error)
    
 def find(message):
+    try:
+        connection = psycopg2.connect(user="postgres",
+                                    password="MiFi",
+                                    host="127.0.0.1",
+                                    port="5432",
+                                    database="bot_catalog")
+
+        cursor = connection.cursor()
+        postgreSQL_select_Query = "SELECT * FROM catalog_fire"
+        a = 1
+        cursor.execute(postgreSQL_select_Query)
+        catalog_pos = cursor.fetchmany(a)
+        name = ''
+        quantity = 0
+        photo = ''
+        price = 0
+        for pos in catalog_pos:
+            name = pos[0]
+            quantity = pos[1]
+            photo = pos[2]
+            price = pos[3]
+        
+    except (Exception, Error) as error:
+        print("Ошибка при работе с PostgreSQL", error)
+        
     a=1
     str = message.text
     for word in words_array:
