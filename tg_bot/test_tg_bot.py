@@ -145,45 +145,20 @@ def start_support(message):
 
 @bot.message_handler(commands=['catalog'])
 def start_catalog(message):
-    mesg = bot.send_message(message.chat.id, text_catalog_menu)
-    bot.register_next_step_handler(mesg, find)
+    bot.send_message(message.chat.id, text_catalog_menu)
+    bot.register_next_step_handler(message, find)
    
 def find(message):
-    try:
-        connection = psycopg2.connect(user="postgres",
-                                    password="MiFi",
-                                    host="127.0.0.1",
-                                    port="5432",
-                                    database="bot_catalog")
+    result_list = []
+    request = str(message).split()
+    for i in request:
+        if i in words_array:
+            result_list.append(words_array)
+    if result_list != []:
+        bot.send_message(message.chat.id, result_list)
+    else:
+        bot.send_message(message.chat.id, "По вашему запросу ничего не найдено!")
 
-        cursor = connection.cursor()
-        postgreSQL_select_Query = "SELECT * FROM catalog_fire"
-        a = 1
-        cursor.execute(postgreSQL_select_Query)
-        catalog_pos = cursor.fetchmany(a)
-        name = ''
-        quantity = 0
-        photo = ''
-        price = 0
-        for pos in catalog_pos:
-            name = pos[0]
-            quantity = pos[1]
-            photo = pos[2]
-            price = pos[3]
-        
-    except (Exception, Error) as error:
-        print("Ошибка при работе с PostgreSQL", error)
-        
-    a=1
-    str = message.text
-    for word in words_array:
-        if word.lower() in str.lower():
-            while a!=20:
-                if word.lower() in name:
-                    bot.send_message(message.chat.id, name,"\n",quantity,"\n",price) 
-                else:
-                    a+=1
-                break   
 
 @bot.callback_query_handler(func=lambda call:True)
 def callback_start(call):
